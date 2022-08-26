@@ -10,8 +10,9 @@ Following steps must be executed on your local computer.
     2. Hint: Which registry is accessible by default?
 
 Questions:
-3. Where is launched the corresponding container?
-4. How do you display corresponding logs?
+
+1. Where is launched the _nginx_ container?
+2. How do you display corresponding logs?
 
 ## Installation of Minikube
 
@@ -22,6 +23,7 @@ Questions:
 5. Deploy the preceding pod.yaml file
 
 Questions:
-3. Where is launched the corresponding container?
-4. How do you display corresponding logs?
+
+1. Where is launched the corresponding container?
+2. How do you display corresponding logs?
 
