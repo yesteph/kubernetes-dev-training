@@ -4,5 +4,5 @@ metadata:
   name: hello-world
 spec:
   containers:
-  - image: hello-world
-    name: hello-world
+  - name: nginx
+    image: jitesoft/nginx:1.23.1
