@@ -1,0 +1,17 @@
+# Default values for simpleapp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: lmnzr/simplebackend
+  pullPolicy: IfNotPresent
+  ports:
+    containerPort: 80
+env: {}
+service:
+  type: ""
+  port: 8080
+resources:
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
