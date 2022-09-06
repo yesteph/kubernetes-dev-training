@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wsc-db-client
+  namespace: wsc-training-db
+  annotations:
+    iam.gke.io/gcp-service-account: gke-workload@wsc-cnd-dev-k8s-0.iam.gserviceaccount.com
