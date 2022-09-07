@@ -1,5 +1,5 @@
 resource "google_sql_database_instance" "training" {
-  name         = "${var.MOD_PROJECT}"
+  name             = var.MOD_PROJECT
   database_version = "POSTGRES_14"
   region           = var.MOD_REGION
 
@@ -8,9 +8,9 @@ resource "google_sql_database_instance" "training" {
   settings {
     tier = "db-f1-micro"
     ip_configuration {
-      ipv4_enabled    = true
+      ipv4_enabled = true
       authorized_networks {
-        name = "Internet"
+        name  = "Internet"
         value = "0.0.0.0/0"
       }
     }
@@ -18,8 +18,8 @@ resource "google_sql_database_instance" "training" {
 }
 
 resource "random_password" "training" {
-  length           = 16
-  special          = false
+  length  = 16
+  special = false
 }
 
 resource "google_sql_user" "training" {

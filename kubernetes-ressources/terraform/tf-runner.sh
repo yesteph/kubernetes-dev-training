@@ -59,6 +59,50 @@ function clean_troubleshooting(){
   done
 }
 
+function prepare_observability(){
+  local project_id=0
+  while [ $project_id -lt $NB_PROJECTS ];do
+    echo "Create observability infra for project ${project_id}"
+    # Clear bastion fingerprint that may have changed
+    ssh-keygen -R bastion.${dns_prefix}-${project_id}.wescaletraining.fr
+
+    sed "s/PROJECT_ID/${project_id}/g" prometheus-chart-values.yml > /tmp/prometheus-chart-values.yml
+    sed "s/PROJECT_ID/${project_id}/g" create-observability-dns-records.json > /tmp/create-observability-dns-records.json
+    
+    scp -i kubernetes-formation -o StrictHostKeyChecking=no /tmp/prometheus-chart-values.yml training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr:/tmp/prometheus-chart-values.yml
+    ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "USE_GKE_GCLOUD_AUTH_PLUGIN=True /tmp/get-credential-cluster-0.sh"
+    ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.1/deploy/static/provider/cloud/deploy.yaml"
+    ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "until kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress}' | grep ip; do sleep 5 ; done"
+    
+    SVC_IP=$(ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}'")
+    sed -i "s/SVC_IP/${SVC_IP}/g" /tmp/create-observability-dns-records.json
+
+    ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name wescaletraining.fr | jq -r '.HostedZones[0].Id' | sed -e "s/^\/hostedzone\///")
+    aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch file:///tmp/create-observability-dns-records.json > /dev/null
+
+    project_id=$[$project_id+1]
+  done
+}
+
+function clean_observability(){
+  local project_id=0
+  while [ $project_id -lt $NB_PROJECTS ];do
+    echo "Clean observability infra for project ${project_id}"
+    # Clear bastion fingerprint that may have changed
+    ssh-keygen -R bastion.${dns_prefix}-${project_id}.wescaletraining.fr
+    
+    sed "s/PROJECT_ID/${project_id}/g" delete-observability-dns-records.json > /tmp/delete-observability-dns-records.json
+    SVC_IP=$(ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}'")
+    sed -i "s/SVC_IP/${SVC_IP}/g" /tmp/delete-observability-dns-records.json
+    ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name wescaletraining.fr | jq -r '.HostedZones[0].Id' | sed -e "s/^\/hostedzone\///")
+    aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch file:///tmp/delete-observability-dns-records.json  >/dev/null
+
+    ssh -i kubernetes-formation -o StrictHostKeyChecking=no training@bastion.${dns_prefix}-${project_id}.wescaletraining.fr "kubectl delete ns ingress-nginx monitoring"
+
+    project_id=$[$project_id+1]
+  done
+}
+
 function refresh_git_repo(){
   local project_id=0
   while [ $project_id -lt $NB_PROJECTS ];do
@@ -101,6 +145,8 @@ case $ACTION in
    "refresh_git_repo") refresh_git_repo;;
    "prepare_troubleshooting") prepare_troubleshooting;;
    "clean_troubleshooting") clean_troubleshooting;;
+   "prepare_observability") prepare_observability;;
+   "clean_observability") clean_observability;;
    *)
     echo "Bad argument!"
     echo "Usage: \`$0 provision\` or \`$0 clean\` or \`$0  refresh_git_repo\` or \`$0  prepare_troubleshooting\` or \`$0  clean_troubleshooting\`"

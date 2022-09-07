@@ -1,0 +1,31 @@
+{
+    "Comment": "DELETE observability stack DNS records",
+    "Changes": [
+        {
+            "Action": "DELETE",
+            "ResourceRecordSet": {
+                "Name": "grafana.wsc-cnd-dev-k8s-PROJECT_ID.wescaletraining.fr",
+                "Type": "A",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                        "Value": "SVC_IP"
+                    }
+                ]
+            }
+        },
+        {
+            "Action": "DELETE",
+            "ResourceRecordSet": {
+                "Name": "prometheus.wsc-cnd-dev-k8s-PROJECT_ID.wescaletraining.fr",
+                "Type": "A",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                        "Value": "SVC_IP"
+                    }
+                ]
+            }
+        }
+    ]
+}

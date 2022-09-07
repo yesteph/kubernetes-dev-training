@@ -12,9 +12,9 @@ resource "google_compute_subnetwork" "training_subnet" {
 
 
 resource "google_compute_firewall" "training_fw_rules" {
-  name    = "training-fw-rules"
-  network = google_compute_network.training_net.name
-  source_ranges = [ "0.0.0.0/0" ]
+  name          = "training-fw-rules"
+  network       = google_compute_network.training_net.name
+  source_ranges = ["0.0.0.0/0"]
 
   allow {
     protocol = "icmp"

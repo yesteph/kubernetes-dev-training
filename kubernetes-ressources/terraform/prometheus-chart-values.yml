@@ -1,0 +1,42 @@
+global:
+  rbac:
+    create: true
+
+alertmanager:
+  enabled: true
+
+  serviceAccount:
+    create: true
+
+  ingress:
+    enabled: false
+
+grafana:
+  enabled: true
+
+  ingress:
+    enabled: true
+
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    
+    ingressClassName: nginx
+
+    hosts:
+    - grafana.wsc-cnd-dev-k8s-PROJECT_ID.wescaletraining.fr
+
+
+prometheus:
+
+  enabled: true
+
+  ingress:
+    enabled: true
+
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    
+    ingressClassName: nginx
+
+    hosts:
+    - prometheus.wsc-cnd-dev-k8s-PROJECT_ID.wescaletraining.fr
