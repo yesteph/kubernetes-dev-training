@@ -1,3 +1,5 @@
+# Exercise 5
+
 You will install the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) monitoring stack and experience how it works.
 
 For the purpose of this exercise, an nginx ingress controller has been deployed to allow application access from outside the cluster

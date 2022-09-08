@@ -1,3 +1,5 @@
+# Exercise 2
+
 The goal of this exercise is to discover how you can acess secrets from an external source directly from a Kubernetes cluster.
 
 To do that, a Cloud SQL postgres database has been provisioned on your GCP project. The credentials to access this database are stored in a Secret Manager secret called `training-database-credentials`.
