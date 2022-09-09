@@ -11,6 +11,11 @@ We will see how we can retrieve these credentials and use them to connect to the
 
 # Install the secrets-store-csi-driver
 
+- Install helm
+```
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
 - Install the secrets-store-csi driver using Helm
 ```
 helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
