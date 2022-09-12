@@ -12,7 +12,7 @@ Following steps must be executed on your local computer.
 5. Deploy the descriptor using "Kubernetes: Apply" command (ctrl+shift+p)
 
 
-## Live coding with Scaffold
+## Live coding with Skaffold
 
 1. Install the binary version of Skaffold available here: https://skaffold.dev/docs/install/#standalone-binary
 2. Go to day-1/ex-2/skaffold directory and type `skaffold init`
