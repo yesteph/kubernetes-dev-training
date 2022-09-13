@@ -23,9 +23,10 @@ resource "random_password" "training" {
 }
 
 resource "google_sql_user" "training" {
-  name     = "training"
-  instance = google_sql_database_instance.training.name
-  password = random_password.training.result
+  name            = "training"
+  instance        = google_sql_database_instance.training.name
+  password        = random_password.training.result
+  deletion_policy = "ABANDON"
 }
 
 resource "google_secret_manager_secret" "database_credentials" {
@@ -41,8 +42,8 @@ resource "google_secret_manager_secret_version" "database_credentials" {
   secret = google_secret_manager_secret.database_credentials.id
 
   secret_data = <<EOT
-ip = ${google_sql_database_instance.training.public_ip_address}
-username = ${google_sql_user.training.name}
-password = ${google_sql_user.training.password}
+ip=${google_sql_database_instance.training.public_ip_address}
+username=${google_sql_user.training.name}
+password=${google_sql_user.training.password}
 EOT
 }
